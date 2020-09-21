@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+JOB_NAME="Janitor"
+DOCKER_CMD="/usr/local/bin/docker"
+
+function log {
+    (
+        logger -is "[$JOB_NAME] $1"
+    )
+}
+log "Removing $(du -h ~/.Trash/ | awk '{print $1}') of Garbage..."
+rm -rf ~/.Trash/*
+
+log "Purging all docker images"
+log "$(echo 'y' |$DOCKER_CMD volume prune)"
+log "$(echo 'y' |$DOCKER_CMD system prune --all)"
+log "Done purging"
